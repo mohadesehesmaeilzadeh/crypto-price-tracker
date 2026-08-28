@@ -34,3 +34,16 @@
 
   font-size: 28px;
 }
+
+.error-message {
+  margin-top: 30px;
+
+  padding: 15px 20px;
+
+  background-color: white;
+
+  border: 1px solid #ddd;
+  border-radius: 8px;
+
+  font-size: 18px;
+}

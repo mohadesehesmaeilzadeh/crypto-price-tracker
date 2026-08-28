@@ -11,5 +11,9 @@ export async function getTicker(pair) {
 
   const data = await response.json();
 
+  if (data.error && data.error.length > 0) {
+    throw new Error(data.error[0]);
+  }
+
   return data;
 }

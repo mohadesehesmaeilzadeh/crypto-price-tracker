@@ -8,19 +8,53 @@ import { formatPrice } from "./utils/formatPrice";
 function App() {
   const [bitcoinPrice, setBitcoinPrice] = useState(null);
 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
   useEffect(() => {
     const loadBitcoinPrice = async () => {
-      const data = await getTicker("xbtusd");
+      try {
+        setLoading(true);
+        setError("");
 
-      const ticker = Object.values(data.result)[0];
+        const data = await getTicker("xbtusd");
 
-      const price = ticker.c[0];
+        const ticker = Object.values(data.result)[0];
 
-      setBitcoinPrice(price);
+        const price = ticker.c[0];
+
+        setBitcoinPrice(price);
+      } catch (error) {
+        setError("Failed to load Bitcoin price.");
+      } finally {
+        setLoading(false);
+      }
     };
 
     loadBitcoinPrice();
   }, []);
+
+  if (loading) {
+    return (
+      <main className="app">
+        <h1>Cryptocurrency Price Tracker</h1>
+
+        <p>Loading cryptocurrency data...</p>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="app">
+        <h1>Cryptocurrency Price Tracker</h1>
+
+        <p className="error-message">
+          {error}
+        </p>
+      </main>
+    );
+  }
 
   return (
     <main className="app">
@@ -34,9 +68,7 @@ function App() {
         <p>BTC / USD</p>
 
         <strong>
-          {bitcoinPrice
-            ? formatPrice(bitcoinPrice)
-            : "Loading..."}
+          {formatPrice(bitcoinPrice)}
         </strong>
       </div>
     </main>
