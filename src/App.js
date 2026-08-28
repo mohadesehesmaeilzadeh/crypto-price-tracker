@@ -5,9 +5,7 @@ function App() {
     <main className="app">
       <h1>Cryptocurrency Price Tracker</h1>
 
-      <p>
-        Live cryptocurrency prices
-      </p>
+      <p>Live cryptocurrency prices</p>
     </main>
   );
 }
