@@ -7,6 +7,7 @@ function CryptoList({ cryptos }) {
         <CryptoCard
           key={crypto.symbol}
           symbol={crypto.symbol}
+          name={crypto.name}
           price={crypto.price}
         />
       ))}

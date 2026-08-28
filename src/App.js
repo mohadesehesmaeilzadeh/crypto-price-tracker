@@ -3,35 +3,65 @@ import { useEffect, useState } from "react";
 import "./App.css";
 
 import { getTicker } from "./services/cryptoApi";
-import { formatPrice } from "./utils/formatPrice";
+import CryptoList from "./components/CryptoList";
+
+const cryptoPairs = [
+  {
+    symbol: "BTC",
+    name: "Bitcoin",
+    pair: "xbtusd",
+  },
+  {
+    symbol: "ETH",
+    name: "Ethereum",
+    pair: "ethusd",
+  },
+  {
+    symbol: "SOL",
+    name: "Solana",
+    pair: "solusd",
+  },
+  {
+    symbol: "ADA",
+    name: "Cardano",
+    pair: "adausd",
+  },
+];
 
 function App() {
-  const [bitcoinPrice, setBitcoinPrice] = useState(null);
-
+  const [cryptos, setCryptos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const loadBitcoinPrice = async () => {
+    const loadCryptoPrices = async () => {
       try {
         setLoading(true);
         setError("");
 
-        const data = await getTicker("xbtusd");
+        const results = await Promise.all(
+          cryptoPairs.map(async (crypto) => {
+            const data = await getTicker(crypto.pair);
 
-        const ticker = Object.values(data.result)[0];
+            const ticker = Object.values(data.result)[0];
 
-        const price = ticker.c[0];
+            return {
+              symbol: crypto.symbol,
+              name: crypto.name,
+              price: ticker.c[0],
+            };
+          })
+        );
 
-        setBitcoinPrice(price);
+        setCryptos(results);
       } catch (error) {
-        setError("Failed to load Bitcoin price.");
+        setError("Failed to load cryptocurrency prices.");
       } finally {
         setLoading(false);
       }
     };
 
-    loadBitcoinPrice();
+    loadCryptoPrices();
   }, []);
 
   if (loading) {
@@ -62,15 +92,7 @@ function App() {
 
       <p>Live cryptocurrency prices</p>
 
-      <div className="crypto-card">
-        <h2>Bitcoin</h2>
-
-        <p>BTC / USD</p>
-
-        <strong>
-          {formatPrice(bitcoinPrice)}
-        </strong>
-      </div>
+      <CryptoList cryptos={cryptos} />
     </main>
   );
 }

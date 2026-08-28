@@ -33,6 +33,11 @@
   margin-top: 20px;
 
   font-size: 28px;
+  @media (max-width: 768px) {
+  .crypto-list {
+    grid-template-columns: 1fr;
+  }
+}
 }
 
 .error-message {
@@ -46,4 +51,17 @@
   border-radius: 8px;
 
   font-size: 18px;
+}
+
+.crypto-list {
+  width: 100%;
+  max-width: 900px;
+
+  display: grid;
+
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 20px;
+
+  margin-top: 30px;
 }

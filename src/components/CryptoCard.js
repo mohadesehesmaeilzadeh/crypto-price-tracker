@@ -1,9 +1,15 @@
-function CryptoCard({ symbol, price }) {
+import { formatPrice } from "../utils/formatPrice";
+
+function CryptoCard({ symbol, name, price }) {
   return (
     <div className="crypto-card">
-      <h2>{symbol}</h2>
+      <h2>{name}</h2>
 
-      <p>{price}</p>
+      <p>{symbol} / USD</p>
+
+      <strong>
+        {formatPrice(price)}
+      </strong>
     </div>
   );
 }
