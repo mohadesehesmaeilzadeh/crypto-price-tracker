@@ -9,8 +9,6 @@
   padding: 50px 20px;
 }
 
-/* Header */
-
 .app-header {
   width: 100%;
   max-width: 900px;
@@ -31,8 +29,6 @@
 
   font-size: 16px;
 }
-
-/* Search Bar */
 
 .search-bar {
   width: 100%;
@@ -66,8 +62,6 @@
   box-shadow:
     0 0 0 2px rgba(0, 0, 0, 0.05);
 }
-
-/* Refresh Section */
 
 .refresh-section {
   width: 100%;
@@ -106,8 +100,6 @@
 
   font-size: 13px;
 }
-
-/* Refresh Button */
 
 .refresh-button {
   padding: 11px 18px;
@@ -152,8 +144,6 @@
   text-align: center;
 }
 
-/* Crypto List */
-
 .crypto-list {
   width: 100%;
   max-width: 900px;
@@ -167,8 +157,6 @@
 
   margin-top: 30px;
 }
-
-/* Crypto Card */
 
 .crypto-card {
   width: 100%;
@@ -194,8 +182,6 @@
     0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
-/* Crypto Card Header */
-
 .crypto-card-header {
   display: flex;
   justify-content: space-between;
@@ -218,15 +204,11 @@
   font-size: 14px;
 }
 
-/* Price */
-
 .crypto-price {
   font-size: 24px;
 
   white-space: nowrap;
 }
-
-/* Crypto Details */
 
 .crypto-details {
   margin-top: 25px;
@@ -254,7 +236,6 @@
   text-align: right;
 }
 
-/* Error */
 
 .error-message {
   width: 100%;
@@ -276,8 +257,6 @@
   text-align: center;
 }
 
-/* No Results */
-
 .no-results {
   margin-top: 40px;
 
@@ -288,8 +267,6 @@
 
   text-align: center;
 }
-
-/* Tablet / Mobile */
 
 @media (max-width: 768px) {
   .app {
@@ -326,8 +303,6 @@
     font-size: 22px;
   }
 }
-
-/* Small Mobile */
 
 @media (max-width: 480px) {
   .app {
