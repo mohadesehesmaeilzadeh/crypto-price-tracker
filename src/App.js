@@ -11,6 +11,8 @@ import SearchBar from "./components/SearchBar";
 
 import { getTicker } from "./services/cryptoApi";
 
+const AUTO_REFRESH_INTERVAL = 30000;
+
 const cryptoPairs = [
   {
     symbol: "BTC",
@@ -39,6 +41,7 @@ function App() {
   const [search, setSearch] = useState("");
 
   const [loading, setLoading] = useState(true);
+
   const [refreshing, setRefreshing] =
     useState(false);
 
@@ -104,6 +107,14 @@ function App() {
 
   useEffect(() => {
     loadCryptoPrices();
+
+    const intervalId = setInterval(() => {
+      loadCryptoPrices(true);
+    }, AUTO_REFRESH_INTERVAL);
+
+    return () => {
+      clearInterval(intervalId);
+    };
   }, [loadCryptoPrices]);
 
   const handleSearchChange = (event) => {
@@ -190,12 +201,18 @@ function App() {
       />
 
       <div className="refresh-section">
-        {lastUpdated && (
-          <p className="last-updated">
-            Last updated:{" "}
-            {lastUpdated.toLocaleTimeString()}
+        <div className="update-info">
+          {lastUpdated && (
+            <p className="last-updated">
+              Last updated:{" "}
+              {lastUpdated.toLocaleTimeString()}
+            </p>
+          )}
+
+          <p className="auto-refresh-info">
+            Auto-refreshes every 30 seconds
           </p>
-        )}
+        </div>
 
         <button
           type="button"

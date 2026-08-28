@@ -63,11 +63,11 @@
 
   border-color: #222;
 
-  box-shadow: 0 0 0 2px
-    rgba(0, 0, 0, 0.05);
+  box-shadow:
+    0 0 0 2px rgba(0, 0, 0, 0.05);
 }
 
-/* Refresh */
+/* Refresh Section */
 
 .refresh-section {
   width: 100%;
@@ -82,13 +82,32 @@
   margin-top: 25px;
 }
 
+.update-info {
+  display: flex;
+  flex-direction: column;
+
+  gap: 5px;
+
+  text-align: left;
+}
+
 .last-updated {
   margin: 0;
 
-  color: #777;
+  color: #555;
 
   font-size: 14px;
 }
+
+.auto-refresh-info {
+  margin: 0;
+
+  color: #999;
+
+  font-size: 13px;
+}
+
+/* Refresh Button */
 
 .refresh-button {
   padding: 11px 18px;
@@ -207,7 +226,7 @@
   white-space: nowrap;
 }
 
-/* Details */
+/* Crypto Details */
 
 .crypto-details {
   margin-top: 25px;
@@ -283,8 +302,15 @@
 
   .refresh-section {
     flex-direction: column;
+    align-items: stretch;
+  }
 
-    justify-content: center;
+  .update-info {
+    text-align: center;
+  }
+
+  .refresh-button {
+    align-self: center;
   }
 
   .crypto-list {
