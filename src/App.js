@@ -4,6 +4,7 @@ import "./App.css";
 
 import { getTicker } from "./services/cryptoApi";
 import CryptoList from "./components/CryptoList";
+import SearchBar from "./components/SearchBar";
 
 const cryptoPairs = [
   {
@@ -30,6 +31,8 @@ const cryptoPairs = [
 
 function App() {
   const [cryptos, setCryptos] = useState([]);
+  const [search, setSearch] = useState("");
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -50,7 +53,7 @@ function App() {
               name: crypto.name,
               price: ticker.c[0],
             };
-          })
+          }),
         );
 
         setCryptos(results);
@@ -63,6 +66,19 @@ function App() {
 
     loadCryptoPrices();
   }, []);
+
+  const handleSearchChange = (event) => {
+    setSearch(event.target.value);
+  };
+
+  const normalizedSearch = search.trim().toLowerCase();
+
+  const filteredCryptos = cryptos.filter((crypto) => {
+    return (
+      crypto.name.toLowerCase().includes(normalizedSearch) ||
+      crypto.symbol.toLowerCase().includes(normalizedSearch)
+    );
+  });
 
   if (loading) {
     return (
@@ -79,9 +95,7 @@ function App() {
       <main className="app">
         <h1>Cryptocurrency Price Tracker</h1>
 
-        <p className="error-message">
-          {error}
-        </p>
+        <p className="error-message">{error}</p>
       </main>
     );
   }
@@ -89,10 +103,13 @@ function App() {
   return (
     <main className="app">
       <h1>Cryptocurrency Price Tracker</h1>
-
       <p>Live cryptocurrency prices</p>
-
-      <CryptoList cryptos={cryptos} />
+      <SearchBar value={search} onChange={handleSearchChange} />
+      {filteredCryptos.length === 0 ? (
+        <p className="no-results">No cryptocurrencies found.</p>
+      ) : (
+        <CryptoList cryptos={filteredCryptos} />
+      )}{" "}
     </main>
   );
 }
