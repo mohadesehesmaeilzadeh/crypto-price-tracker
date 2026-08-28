@@ -1,4 +1,5 @@
 .app {
+  width: 100%;
   min-height: 100vh;
 
   display: flex;
@@ -6,71 +7,38 @@
   align-items: center;
 
   padding: 50px 20px;
+}
+
+/* Header */
+
+.app-header {
+  width: 100%;
+  max-width: 900px;
 
   text-align: center;
 }
 
-.crypto-card {
-  width: 100%;
-  max-width: 350px;
+.app-header h1 {
+  margin: 0;
 
-  margin-top: 30px;
-  padding: 25px;
-
-  background-color: white;
-
-  border: 1px solid #ddd;
-  border-radius: 10px;
+  font-size: 36px;
 }
 
-.crypto-card h2 {
-  margin-top: 0;
+.app-header p {
+  margin: 10px 0 0;
+
+  color: #666;
+
+  font-size: 16px;
 }
 
-.crypto-card strong {
-  display: block;
-
-  margin-top: 20px;
-
-  font-size: 28px;
-  @media (max-width: 768px) {
-  .crypto-list {
-    grid-template-columns: 1fr;
-  }
-}
-}
-
-.error-message {
-  margin-top: 30px;
-
-  padding: 15px 20px;
-
-  background-color: white;
-
-  border: 1px solid #ddd;
-  border-radius: 8px;
-
-  font-size: 18px;
-}
-
-.crypto-list {
-  width: 100%;
-  max-width: 900px;
-
-  display: grid;
-
-  grid-template-columns: repeat(2, 1fr);
-
-  gap: 20px;
-
-  margin-top: 30px;
-}
+/* Search Bar */
 
 .search-bar {
   width: 100%;
   max-width: 500px;
 
-  margin-top: 25px;
+  margin-top: 30px;
 }
 
 .search-bar input {
@@ -78,22 +46,222 @@
 
   padding: 14px 16px;
 
-  font-size: 16px;
+  background-color: #fff;
 
   border: 1px solid #ccc;
   border-radius: 8px;
 
-  background-color: white;
+  font-size: 16px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .search-bar input:focus {
   outline: none;
+
   border-color: #222;
+
+  box-shadow: 0 0 0 2px
+    rgba(0, 0, 0, 0.05);
 }
+
+/* Crypto List */
+
+.crypto-list {
+  width: 100%;
+  max-width: 900px;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 20px;
+
+  margin-top: 30px;
+}
+
+/* Crypto Card */
+
+.crypto-card {
+  width: 100%;
+
+  padding: 22px;
+
+  background-color: #fff;
+
+  border: 1px solid #ddd;
+  border-radius: 12px;
+
+  text-align: left;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.crypto-card:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Card Header */
+
+.crypto-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 20px;
+}
+
+.crypto-card-header h2 {
+  margin: 0 0 5px;
+
+  font-size: 22px;
+}
+
+.crypto-card-header p {
+  margin: 0;
+
+  color: #777;
+
+  font-size: 14px;
+}
+
+/* Price */
+
+.crypto-price {
+  font-size: 24px;
+
+  white-space: nowrap;
+}
+
+/* Details */
+
+.crypto-details {
+  margin-top: 25px;
+
+  padding-top: 15px;
+
+  border-top: 1px solid #eee;
+}
+
+.crypto-details p {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 20px;
+
+  margin: 12px 0;
+}
+
+.crypto-details span {
+  color: #777;
+}
+
+.crypto-details strong {
+  text-align: right;
+}
+
+/* Error */
+
+.error-message {
+  width: 100%;
+  max-width: 500px;
+
+  margin: 30px auto 0;
+
+  padding: 15px 20px;
+
+  background-color: #fff;
+
+  border: 1px solid #ddd;
+  border-radius: 8px;
+
+  color: #b00020;
+
+  font-size: 18px;
+
+  text-align: center;
+}
+
+/* No Results */
 
 .no-results {
   margin-top: 40px;
 
+  color: #666;
+
   font-size: 18px;
   font-weight: bold;
+
+  text-align: center;
+}
+
+/* Tablet / Mobile */
+
+@media (max-width: 768px) {
+  .app {
+    padding: 35px 15px;
+  }
+
+  .app-header h1 {
+    font-size: 28px;
+  }
+
+  .crypto-list {
+    grid-template-columns: 1fr;
+  }
+
+  .crypto-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .crypto-price {
+    font-size: 22px;
+  }
+}
+
+/* Small Mobile */
+
+@media (max-width: 480px) {
+  .app {
+    padding: 25px 12px;
+  }
+
+  .app-header h1 {
+    font-size: 24px;
+  }
+
+  .app-header p {
+    font-size: 14px;
+  }
+
+  .search-bar input {
+    padding: 12px 14px;
+
+    font-size: 14px;
+  }
+
+  .crypto-card {
+    padding: 18px;
+  }
+
+  .crypto-details p {
+    flex-direction: column;
+    align-items: flex-start;
+
+    gap: 5px;
+  }
+
+  .crypto-details strong {
+    text-align: left;
+  }
 }

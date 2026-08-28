@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 
 import "./App.css";
 
-import { getTicker } from "./services/cryptoApi";
 import CryptoList from "./components/CryptoList";
 import SearchBar from "./components/SearchBar";
+
+import { getTicker } from "./services/cryptoApi";
 
 const cryptoPairs = [
   {
@@ -32,7 +33,6 @@ const cryptoPairs = [
 function App() {
   const [cryptos, setCryptos] = useState([]);
   const [search, setSearch] = useState("");
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -46,19 +46,31 @@ function App() {
           cryptoPairs.map(async (crypto) => {
             const data = await getTicker(crypto.pair);
 
-            const ticker = Object.values(data.result)[0];
+            const ticker = Object.values(
+              data.result
+            )[0];
 
             return {
               symbol: crypto.symbol,
               name: crypto.name,
               price: ticker.c[0],
+              high: ticker.h[1],
+              low: ticker.l[1],
+              volume: ticker.v[1],
             };
-          }),
+          })
         );
 
         setCryptos(results);
       } catch (error) {
-        setError("Failed to load cryptocurrency prices.");
+        console.error(
+          "Failed to fetch crypto prices:",
+          error
+        );
+
+        setError(
+          "Failed to load cryptocurrency prices."
+        );
       } finally {
         setLoading(false);
       }
@@ -71,21 +83,37 @@ function App() {
     setSearch(event.target.value);
   };
 
-  const normalizedSearch = search.trim().toLowerCase();
+  const normalizedSearch = search
+    .trim()
+    .toLowerCase();
 
-  const filteredCryptos = cryptos.filter((crypto) => {
-    return (
-      crypto.name.toLowerCase().includes(normalizedSearch) ||
-      crypto.symbol.toLowerCase().includes(normalizedSearch)
-    );
-  });
+  const filteredCryptos = cryptos.filter(
+    (crypto) => {
+      const cryptoName =
+        crypto.name.toLowerCase();
+
+      const cryptoSymbol =
+        crypto.symbol.toLowerCase();
+
+      return (
+        cryptoName.includes(normalizedSearch) ||
+        cryptoSymbol.includes(normalizedSearch)
+      );
+    }
+  );
 
   if (loading) {
     return (
       <main className="app">
-        <h1>Cryptocurrency Price Tracker</h1>
+        <div className="app-header">
+          <h1>
+            Cryptocurrency Price Tracker
+          </h1>
 
-        <p>Loading cryptocurrency data...</p>
+          <p>
+            Loading cryptocurrency data...
+          </p>
+        </div>
       </main>
     );
   }
@@ -93,23 +121,46 @@ function App() {
   if (error) {
     return (
       <main className="app">
-        <h1>Cryptocurrency Price Tracker</h1>
+        <div className="app-header">
+          <h1>
+            Cryptocurrency Price Tracker
+          </h1>
 
-        <p className="error-message">{error}</p>
+          <p className="error-message">
+            {error}
+          </p>
+        </div>
       </main>
     );
   }
 
   return (
     <main className="app">
-      <h1>Cryptocurrency Price Tracker</h1>
-      <p>Live cryptocurrency prices</p>
-      <SearchBar value={search} onChange={handleSearchChange} />
+      <div className="app-header">
+        <h1>
+          Cryptocurrency Price Tracker
+        </h1>
+
+        <p>
+          Track live cryptocurrency market
+          prices.
+        </p>
+      </div>
+
+      <SearchBar
+        value={search}
+        onChange={handleSearchChange}
+      />
+
       {filteredCryptos.length === 0 ? (
-        <p className="no-results">No cryptocurrencies found.</p>
+        <p className="no-results">
+          No cryptocurrencies found.
+        </p>
       ) : (
-        <CryptoList cryptos={filteredCryptos} />
-      )}{" "}
+        <CryptoList
+          cryptos={filteredCryptos}
+        />
+      )}
     </main>
   );
 }

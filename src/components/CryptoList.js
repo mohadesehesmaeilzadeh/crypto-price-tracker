@@ -9,6 +9,9 @@ function CryptoList({ cryptos }) {
           symbol={crypto.symbol}
           name={crypto.name}
           price={crypto.price}
+          high={crypto.high}
+          low={crypto.low}
+          volume={crypto.volume}
         />
       ))}
     </div>
