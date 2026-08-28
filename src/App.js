@@ -1,4 +1,8 @@
-import { useEffect, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 
 import "./App.css";
 
@@ -33,18 +37,32 @@ const cryptoPairs = [
 function App() {
   const [cryptos, setCryptos] = useState([]);
   const [search, setSearch] = useState("");
+
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] =
+    useState(false);
+
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    const loadCryptoPrices = async () => {
+  const [lastUpdated, setLastUpdated] =
+    useState(null);
+
+  const loadCryptoPrices = useCallback(
+    async (isRefresh = false) => {
       try {
-        setLoading(true);
+        if (isRefresh) {
+          setRefreshing(true);
+        } else {
+          setLoading(true);
+        }
+
         setError("");
 
         const results = await Promise.all(
           cryptoPairs.map(async (crypto) => {
-            const data = await getTicker(crypto.pair);
+            const data = await getTicker(
+              crypto.pair
+            );
 
             const ticker = Object.values(
               data.result
@@ -62,6 +80,8 @@ function App() {
         );
 
         setCryptos(results);
+
+        setLastUpdated(new Date());
       } catch (error) {
         console.error(
           "Failed to fetch crypto prices:",
@@ -72,12 +92,19 @@ function App() {
           "Failed to load cryptocurrency prices."
         );
       } finally {
-        setLoading(false);
+        if (isRefresh) {
+          setRefreshing(false);
+        } else {
+          setLoading(false);
+        }
       }
-    };
+    },
+    []
+  );
 
+  useEffect(() => {
     loadCryptoPrices();
-  }, []);
+  }, [loadCryptoPrices]);
 
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
@@ -118,7 +145,7 @@ function App() {
     );
   }
 
-  if (error) {
+  if (error && cryptos.length === 0) {
     return (
       <main className="app">
         <div className="app-header">
@@ -129,6 +156,16 @@ function App() {
           <p className="error-message">
             {error}
           </p>
+
+          <button
+            type="button"
+            className="refresh-button"
+            onClick={() =>
+              loadCryptoPrices(false)
+            }
+          >
+            Try Again
+          </button>
         </div>
       </main>
     );
@@ -151,6 +188,34 @@ function App() {
         value={search}
         onChange={handleSearchChange}
       />
+
+      <div className="refresh-section">
+        {lastUpdated && (
+          <p className="last-updated">
+            Last updated:{" "}
+            {lastUpdated.toLocaleTimeString()}
+          </p>
+        )}
+
+        <button
+          type="button"
+          className="refresh-button"
+          onClick={() =>
+            loadCryptoPrices(true)
+          }
+          disabled={refreshing}
+        >
+          {refreshing
+            ? "Refreshing..."
+            : "Refresh Prices"}
+        </button>
+      </div>
+
+      {error && (
+        <p className="refresh-error">
+          {error}
+        </p>
+      )}
 
       {filteredCryptos.length === 0 ? (
         <p className="no-results">
