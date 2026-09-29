@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Kraken Market Dashboard</title>
+  <rect width="64" height="64" rx="16" fill="#f59e0b" />
+  <path d="M19 15v34h8V37l10 12h10L33 32l13-17H36L27 27V15z" fill="#0b101b" />
+</svg>
