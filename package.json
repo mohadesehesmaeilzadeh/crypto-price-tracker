@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "https://mohadesehesmaeilzadeh.github.io/crypto-price-tracker",
   "engines": {
-    "node": ">=20 <23",
+    "node": ">=24 <25",
     "npm": ">=10 <11"
   },
   "dependencies": {
