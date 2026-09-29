@@ -1,4 +1,10 @@
-export function formatNumber(value) {
+import type {
+  VolumeValue,
+} from "../types/crypto";
+
+export function formatNumber(
+  value: VolumeValue
+): string {
   const number = Number(value);
 
   if (Number.isNaN(number)) {
