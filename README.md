@@ -1,239 +1,183 @@
-# Cryptocurrency Price Tracker
+<div align="center">
 
-A simple cryptocurrency price tracker built with React.
+# Kraken Market Dashboard
 
-The application fetches live cryptocurrency market data from the Kraken Public API and displays current prices and market information.
+**A real-time cryptocurrency dashboard built for fast market monitoring, local portfolio tracking, and focused decision support.**
+
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=0b101b)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Kraken API](https://img.shields.io/badge/Kraken-REST%20%2B%20WebSocket-7B61FF)](https://docs.kraken.com/api/)
+[![Tests](https://img.shields.io/badge/Tests-28%20passing-14B8A6)](#testing)
+[![Deploy to GitHub Pages](https://github.com/mohadesehesmaeilzadeh/crypto-price-tracker/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/mohadesehesmaeilzadeh/crypto-price-tracker/actions/workflows/deploy-pages.yml)
+
+[Live Demo](https://mohadesehesmaeilzadeh.github.io/crypto-price-tracker/) · [Features](#features) · [Architecture](#architecture) · [Run Locally](#installation)
+
+</div>
+
+## Overview
+
+Kraken Market Dashboard is a responsive, dark-first finance interface powered by Kraken's public market APIs. It combines an initial REST snapshot with live WebSocket updates, typed historical OHLC data, a persistent watchlist, crossing-based price alerts, and a local portfolio calculator—all without requiring an account or API key.
+
+The application keeps exchange-specific payloads behind typed adapters and exposes normalized market models to the React UI. Watchlists, alerts, and holdings remain private to the browser through validated `localStorage` persistence; live prices are never persisted.
+
+> Market data is informational and may be delayed or unavailable. This project is not financial advice.
+
+## Screenshots
+
+### Desktop dashboard
+
+![Kraken Market Dashboard desktop view](docs/screenshots/dashboard-desktop.png)
+
+### Mobile dashboard
+
+<p align="center">
+  <img src="docs/screenshots/dashboard-mobile.png" width="390" alt="Kraken Market Dashboard mobile view" />
+</p>
 
 ## Features
 
-- Live cryptocurrency prices
-- Bitcoin, Ethereum, Solana, and Cardano support
-- Current cryptocurrency price
-- 24-hour high price
-- 24-hour low price
-- 24-hour trading volume
-- Real-time cryptocurrency search
-- Manual price refresh
-- Automatic refresh every 30 seconds
-- Last updated time
-- Loading state
-- Error handling
-- Responsive design
+- Real-time Kraken ticker updates through one shared WebSocket connection
+- REST snapshot on startup and manual refresh fallback
+- Safe reconnect with connection, disconnected, and reconnecting states
+- Responsive 24H, 7D, and 30D historical price charts
+- Search by asset name or symbol
+- Category filters for Major, Stablecoins, Layer 1, DeFi, and Meme assets
+- Sorting by name, price, 24-hour change, and volume
+- Persistent watchlist with validation of restored symbols
+- Persistent above/below price alerts triggered only on target crossings
+- In-app alert notifications with optional browser notifications
+- Local holdings tracker with live valuation and profit/loss summaries
+- Accessible controls, visible keyboard focus, reduced-motion support, and mobile cards
+- Strict TypeScript models and focused automated tests with mocked network behavior
 
-## Technologies
+## Supported Assets
 
-- React
-- JavaScript
-- HTML
-- CSS
-- Kraken Public REST API
-- Fetch API
+| Asset | Symbol | Kraken market | Category |
+| --- | --- | --- | --- |
+| Bitcoin | BTC | BTC/USD | Major |
+| Ethereum | ETH | ETH/USD | Major |
+| Tether | USDT | USDT/USD | Stablecoins |
+| USD Coin | USDC | USDC/USD | Stablecoins |
+| Solana | SOL | SOL/USD | Layer 1 |
+| XRP | XRP | XRP/USD | Major |
+| Cardano | ADA | ADA/USD | Layer 1 |
+| Dogecoin | DOGE | DOGE/USD | Meme |
+| Polkadot | DOT | DOT/USD | Layer 1 |
+| Chainlink | LINK | LINK/USD | DeFi |
+| Avalanche | AVAX | AVAX/USD | Layer 1 |
+| Litecoin | LTC | LTC/USD | Major |
 
-## React Concepts Used
+Asset identity, REST pair aliases, WebSocket symbols, categories, and icon metadata are defined once in `src/config/cryptocurrencies.ts`.
 
-This project demonstrates several React concepts, including:
+## Architecture
 
-- Components
-- Props
-- `useState`
-- `useEffect`
-- `useCallback`
-- Event handling
-- Conditional rendering
-- Rendering lists with `map()`
-- Filtering data
-- API requests
-- `async / await`
-- `Promise.all()`
-- Effect cleanup
-- `setInterval()`
-- `clearInterval()`
-
-## Project Structure
-
-```text
-src/
-├── components/
-│   ├── CryptoCard.js
-│   ├── CryptoList.js
-│   └── SearchBar.js
-│
-├── services/
-│   └── cryptoApi.js
-│
-├── utils/
-│   ├── formatNumber.js
-│   └── formatPrice.js
-│
-├── App.css
-├── App.js
-├── index.css
-└── index.js
+```mermaid
+flowchart LR
+    REST[Kraken REST API] --> Adapter[Typed API adapters]
+    WS[Kraken WebSocket v2] --> Adapter
+    Adapter --> Market[Normalized market data]
+    REST --> History[Historical OHLC cache]
+    History --> Chart[Recharts price chart]
+    Market --> UI[React dashboard]
+    Market --> Alerts[Crossing-based alerts]
+    Market --> Portfolio[Portfolio calculations]
+    Storage[(Validated localStorage)] --> Watchlist[Watchlist]
+    Storage --> Alerts
+    Storage --> Portfolio
+    Watchlist --> UI
+    Alerts --> UI
+    Portfolio --> UI
 ```
 
-## API
+Key boundaries:
 
-Market data is provided by the Kraken Public REST API.
+- `src/services/` validates unknown Kraken payloads and normalizes API data.
+- `src/types/` owns shared domain, UI, portfolio, alert, chart, and connection types.
+- `src/hooks/` isolates historical requests and validated browser persistence.
+- `src/utils/portfolio.ts` keeps valuation math outside presentation components.
+- `src/components/` receives normalized data and remains independent of raw Kraken response shapes.
 
-The application uses Kraken's public Ticker endpoint to retrieve cryptocurrency market data.
+## Tech Stack
 
-No API key is required for the public market data used in this project.
+| Area | Technology |
+| --- | --- |
+| UI | React 19, semantic HTML, CSS |
+| Language | TypeScript 4.9 in strict mode |
+| Build | Create React App / React Scripts 5 |
+| Charts | Recharts 3 |
+| Market data | Kraken REST API and WebSocket v2 |
+| Persistence | Browser `localStorage` with runtime validation |
+| Testing | Jest, React Testing Library, jest-dom |
+| Deployment | GitHub Actions and GitHub Pages |
 
-The application currently tracks:
+## Testing
 
-- BTC / USD
-- ETH / USD
-- SOL / USD
-- ADA / USD
+The test suite uses reusable typed fixtures and mocked REST/WebSocket behavior, so it never depends on the live Kraken network.
+
+Coverage focuses on:
+
+- Market loading, error, empty, search, category, and sorting behavior
+- Watchlist persistence and invalid stored data
+- Above/below price alert crossings and duplicate prevention
+- Alert enable, disable, edit, and delete behavior
+- Holding and portfolio calculations, persistence, and invalid data
+- Historical chart ranges, caching, cancellation, and stale requests
+- WebSocket subscription, malformed messages, reconnect, and cleanup
+
+```bash
+npm run test:ci
+npm run typecheck
+npm run build
+```
+
+Current result: **28 tests passing across 9 test suites**.
 
 ## Installation
 
-Clone the repository:
+### Requirements
+
+- Node.js 20 LTS
+- npm 10
 
 ```bash
 git clone https://github.com/mohadesehesmaeilzadeh/crypto-price-tracker.git
-```
-
-Open the project directory:
-
-```bash
 cd crypto-price-tracker
-```
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Start the development server:
-
-```bash
+nvm use
+npm ci
 npm start
 ```
 
-Then open:
+Open [http://localhost:3000/crypto-price-tracker/](http://localhost:3000/crypto-price-tracker/). Kraken public endpoints require an internet connection; no API key is needed.
 
-```text
-http://localhost:3000
-```
-
-## Available Scripts
-
-### Start Development Server
-
-```bash
-npm start
-```
-
-Runs the application in development mode.
-
-### Production Build
+Create the production bundle with:
 
 ```bash
 npm run build
 ```
 
-Creates an optimized production build of the application.
+The optimized static site is written to `build/` with the repository base path `/crypto-price-tracker/`.
 
-## How It Works
+## Challenges
 
-When the application loads, it requests cryptocurrency market data from the Kraken Public API.
+- **Two Kraken protocols:** REST and WebSocket use different pair conventions—most notably Dogecoin's REST alias—so exchange types and mappings are isolated from the UI model.
+- **Untrusted external data:** REST responses, WebSocket messages, and persisted browser values are parsed from `unknown` and narrowed before entering application state.
+- **Alert correctness:** alerts compare the previous and current live prices so a target fires on a crossing, not repeatedly while the condition remains true.
+- **Fast asset switching:** historical requests use caching, abort signals, and request identity checks to avoid duplicate work and stale chart updates.
+- **Frequent live updates:** unchanged ticker values preserve existing objects, reducing unnecessary list updates while portfolio and alert calculations stay current.
+- **Static hosting:** GitHub Pages serves the app from a repository subpath, so production asset URLs are generated from the configured homepage.
 
-The basic data flow is:
+## What I Learned
 
-```text
-App
- ↓
-useEffect
- ↓
-loadCryptoPrices()
- ↓
-getTicker()
- ↓
-Kraken Public API
- ↓
-JSON Response
- ↓
-React State
- ↓
-CryptoList
- ↓
-CryptoCard
-```
+- How to design a domain layer that keeps raw exchange payloads separate from UI-safe models
+- How to manage a single reconnecting WebSocket client through React lifecycle cleanup
+- How crossing detection differs from simple threshold evaluation for real-time alerts
+- How to validate and version client-side persisted state without storing volatile prices
+- How to make financial data readable across tables, cards, charts, and small screens
+- How to test asynchronous market behavior deterministically with typed mocks
+- How to package and deploy a subpath-hosted React application through GitHub Pages artifacts
 
-Cryptocurrency prices are automatically refreshed every 30 seconds.
+## Live Demo
 
-Users can also manually refresh prices using the `Refresh Prices` button.
+**[Open the Kraken Market Dashboard](https://mohadesehesmaeilzadeh.github.io/crypto-price-tracker/)**
 
-## Search
-
-The search field allows cryptocurrencies to be filtered by either their name or symbol.
-
-Examples:
-
-```text
-Bitcoin
-BTC
-Ethereum
-ETH
-Solana
-SOL
-Cardano
-ADA
-```
-
-Search results are updated immediately while the user types.
-
-## Price Information
-
-Each cryptocurrency card displays:
-
-- Cryptocurrency name
-- Symbol
-- Current price
-- 24-hour high
-- 24-hour low
-- 24-hour trading volume
-
-Price and number formatting are handled by reusable utility functions.
-
-## Auto Refresh
-
-Cryptocurrency prices automatically refresh every 30 seconds using `setInterval()`.
-
-The interval is cleaned up when the React component unmounts using `clearInterval()`.
-
-This prevents unnecessary timers from continuing to run in the background.
-
-## Error Handling
-
-The application handles:
-
-- HTTP request errors
-- Kraken API errors
-- Missing API results
-- Loading states
-- Refresh errors
-
-If the initial request fails, the user can retry the request using the `Try Again` button.
-
-## Responsive Design
-
-The interface is responsive and supports:
-
-- Desktop
-- Tablet
-- Mobile
-
-Cryptocurrency cards are displayed in a two-column layout on larger screens and switch to a single-column layout on smaller screens.
-
-## Repository
-
-You can view the complete source code of this project on GitHub:
-
-[Crypto Price Tracker - GitHub Repository](https://github.com/mohadesehesmaeilzadeh/crypto-price-tracker)
-
-## Author
-
-Developed as a React practice project.
+Deployment runs automatically after changes reach `main`. The workflow type-checks, tests, builds, uploads the `build/` artifact, and deploys it to the protected `github-pages` environment.
